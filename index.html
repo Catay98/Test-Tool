@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本命香测试</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, #fdf6f0 0%, #f8e8e0 50%, #f5d5d0 100%);
+            min-height: 100vh;
+            color: #4a3f3a;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-page {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 600;
+            color: #8b6f5c;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a08070;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .description {
+            font-size: 1rem;
+            color: #6b5a52;
+            margin-bottom: 50px;
+            line-height: 2;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #d4a5a5 0%, #c48f8f 100%);
+            color: white;
+            border: none;
+            padding: 18px 60px;
+            font-size: 1.1rem;
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(196, 143, 143, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(196, 143, 143, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .question-page {
+            padding: 40px 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e8d5d0;
+            border-radius: 2px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #d4a5a5, #c48f8f);
+            transition: width 0.5s ease;
+            border-radius: 2px;
+        }
+
+        .question-number {
+            font-size: 0.9rem;
+            color: #a08070;
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            color: #4a3f3a;
+            margin-bottom: 40px;
+            text-align: center;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #e8d5d0;
+            padding: 18px 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            color: #5a4f4a;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .option:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #d4a5a5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(212, 165, 165, 0.2);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, #d4a5a5 0%, #c48f8f 100%);
+            color: white;
+            border-color: #c48f8f;
+        }
+
+        .result-page {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .result-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #8b6f5c;
+            margin-bottom: 30px;
+            letter-spacing: 3px;
+        }
+
+        .fragrance-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(139, 111, 92, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .fragrance-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: #4a3f3a;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .fragrance-category {
+            font-size: 0.95rem;
+            color: #a08070;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .fragrance-description {
+            font-size: 1rem;
+            color: #6b5a52;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .fragrance-notes {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .note-tag {
+            background: linear-gradient(135deg, #f5e6e0 0%, #e8d5d0 100%);
+            color: #6b5a52;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .fragrance-image {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #f5e6e0 0%, #e8d5d0 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #d4a5a5;
+            box-shadow: 0 10px 30px rgba(139, 111, 92, 0.2);
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #8b6f5c 0%, #7a5f4c 100%);
+            color: white;
+            border: none;
+            padding: 16px 50px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(139, 111, 92, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 111, 92, 0.4);
+        }
+
+        .decorative-element {
+            position: fixed;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .decorative-1 {
+            top: 10%;
+            left: 5%;
+            font-size: 8rem;
+            color: #d4a5a5;
+        }
+
+        .decorative-2 {
+            bottom: 10%;
+            right: 5%;
+            font-size: 10rem;
+            color: #c48f8f;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .logo {
+                font-size: 2.5rem;
+                margin-bottom: 15px;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 30px;
+            }
+
+            .description {
+                font-size: 0.95rem;
+                margin-bottom: 40px;
+            }
+
+            .btn {
+                padding: 15px 45px;
+                font-size: 1rem;
+            }
+
+            .question-text {
+                font-size: 1.2rem;
+                margin-bottom: 30px;
+            }
+
+            .option {
+                padding: 15px 20px;
+                font-size: 0.95rem;
+            }
+
+            .result-title {
+                font-size: 2rem;
+                margin-bottom: 25px;
+            }
+
+            .fragrance-card {
+                padding: 30px 20px;
+            }
+
+            .fragrance-name {
+                font-size: 1.6rem;
+            }
+
+            .fragrance-image {
+                height: 250px;
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+            }
+
+            .description {
+                font-size: 0.9rem;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .option {
+                padding: 12px 18px;
+                font-size: 0.9rem;
+            }
+
+            .fragrance-name {
+                font-size: 1.4rem;
+            }
+
+            .fragrance-image {
+                height: 200px;
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="decorative-element decorative-1">✿</div>
+    <div class="decorative-element decorative-2">❀</div>
+
+    <div class="container">
+        <div class="page active" id="welcome-page">
+            <div class="welcome-page">
+                <div class="logo">本命香</div>
+                <div class="subtitle">FIND YOUR SIGNATURE SCENT</div>
+                <div class="description">
+                    通过50道精心设计的问题，从环境、空间、性格等多个维度，
+                    深入了解你的内心世界，为你找到最契合的本命香。
+                </div>
+                <button class="btn" onclick="startQuiz()">开始测试</button>
+            </div>
+        </div>
+
+        <div class="page" id="question-page">
+            <div class="question-page">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="question-number" id="question-number">问题 1 / 50</div>
+                <div class="question-text" id="question-text"></div>
+                <div class="options-container" id="options-container"></div>
+            </div>
+        </div>
+
+        <div class="page" id="result-page">
+            <div class="result-page">
+                <div class="result-title">你的本命香</div>
+                <div class="fragrance-card">
+                    <div class="fragrance-image" id="fragrance-icon">🌸</div>
+                    <div class="fragrance-name" id="fragrance-name"></div>
+                    <div class="fragrance-category" id="fragrance-category"></div>
+                    <div class="fragrance-notes" id="fragrance-notes"></div>
+                    <div class="fragrance-description" id="fragrance-description"></div>
+                </div>
+                <button class="restart-btn" onclick="restartQuiz()">重新测试</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "清晨醒来，你最希望窗外是怎样的天气？",
+                options: ["阳光明媚，充满朝气", "细雨蒙蒙，空气湿润", "深秋微凉，微风萧瑟", "暖阳午后，慵懒惬意"],
+                category: "morning"
+            },
+            {
+                question: "如果要把你的生活比作一种颜色，会是？",
+                options: ["纯净如初雪般清澈，简约而明亮", "柔和似薰衣草田，静谧而优雅", "沉稳像深秋落叶，温暖而安心", "热烈如红酒般深邃，浓郁而迷人"],
+                category: "color"
+            },
+            {
+                question: "你更喜欢哪种口感的饮品？",
+                options: ["气泡在舌尖跳跃，清爽而活泼", "丝滑浓郁在口中蔓延，温暖而满足", "茶香回甘悠远绵长，清雅而宁静", "层次丰富层层递进，神秘而醉人"],
+                category: "drink"
+            },
+            {
+                question: "听到'夏天'这个词，你脑海中浮现的画面是？",
+                options: ["海浪轻拍沙滩，海鸥自由飞翔", "冰镇柠檬黄澄澄，清凉解暑", "花园里繁花盛开，绚烂多姿", "冷气房中捧本书，安静惬意"],
+                category: "summer"
+            },
+            {
+                question: "面对朋友的倾诉，你更倾向于？",
+                options: ["带他去温馨餐厅，美食治愈心灵", "静静聆听给予拥抱，情感共鸣", "理性分析提供建议，逻辑清晰", "陪他旅行释放压力，重新出发"],
+                category: "personality"
+            },
+            {
+                question: "你理想中的居住环境是？",
+                options: ["面朝大海春暖花开，浪漫而开阔", "森林深处的小木屋，宁静而自然", "城市中心的顶层公寓，繁华而便利", "乡村田园的温馨小屋，简单而舒适"],
+                category: "environment"
+            },
+            {
+                question: "你更喜欢哪种花？",
+                options: ["娇艳玫瑰热情似火，浪漫而浓烈", "清新茉莉淡雅芬芳，温柔而内敛", "纯洁百合端庄优雅，高贵而清新", "紫色薰衣草浪漫梦幻，静谧而安宁"],
+                category: "flower"
+            },
+            {
+                question: "你的性格更偏向于？",
+                options: ["如阳光般灿烂活泼，开朗而热情", "如月光般柔和温婉，内敛而敏感", "如磐石般坚韧独立，自信而果断", "如诗人般多愁善感，浪漫而深情"],
+                category: "character"
+            },
+            {
+                question: "你喜欢的音乐风格是？",
+                options: ["古典乐优雅大气，沉静而深远", "流行乐动感活力，时尚而亲切", "爵士乐慵懒惬意，浪漫而随性", "民谣清澈质朴，温暖而走心"],
+                category: "music"
+            },
+            {
+                question: "你通常在什么场合使用香水？",
+                options: ["日常通勤的地铁上，简单而得体", "浪漫约会的烛光下，迷人而优雅", "重要会议的谈判间，自信而专业", "独处时的周末午后，放松而享受"],
+                category: "occasion"
+            },
+            {
+                question: "你理想中的周末是？",
+                options: ["户外奔跑感受微风，自由而畅快", "安静阅读提升自我，沉静而充实", "与好友相聚畅聊，欢乐而温馨", "宅家独处享受安静，自在而舒适"],
+                category: "weekend"
+            },
+            {
+                question: "你更喜欢哪种天气？",
+                options: ["晴空万里阳光明媚，明朗而欢快", "细雨绵绵诗意浪漫，温柔而感性", "微风轻拂凉爽舒适，清新而惬意", "大雪纷飞银装素裹，纯净而宁静"],
+                category: "weather"
+            },
+            {
+                question: "你理想中的约会地点是？",
+                options: ["法式餐厅烛光晚餐，浪漫而精致", "海边沙滩漫步听浪，自由而惬意", "艺术画廊看展聊天，高雅而有趣", "街角咖啡馆喝咖啡，温馨而自在"],
+                category: "dating"
+            },
+            {
+                question: "你更喜欢哪种类型的电影？",
+                options: ["爱情片感动落泪，浪漫而深刻", "悬疑片紧张刺激，烧脑而过瘾", "文艺片沉静思考，优雅而内涵", "喜剧片开怀大笑，轻松而欢乐"],
+                category: "movie"
+            },
+            {
+                question: "你最喜欢的旅行方式是？",
+                options: ["citywalk探索城市，繁华而新鲜", "徒步穿越森林山川，自由而冒险", "探访古迹了解历史，深沉而充实", "海岛度假放松身心，悠闲而舒适"],
+                category: "travel"
+            },
+            {
+                question: "你理想中的工作环境是？",
+                options: ["独立小空间专注做事，高效而安静", "开放团队协作讨论，活力而碰撞", "自由职业灵活安排，自在而随性", "创意园区激发灵感，独特而有趣"],
+                category: "work"
+            },
+            {
+                question: "你更喜欢哪种动物？",
+                options: ["慵懒猫咪独立神秘，优雅而傲娇", "忠诚狗狗热情粘人，可爱而温暖", "自由小鸟展翅高飞，轻盈而灵动", "优雅鲸鱼深海遨游，沉静而深邃"],
+                category: "animal"
+            },
+            {
+                question: "你最喜欢的甜点是？",
+                options: ["丝滑巧克力浓郁醇厚，苦甜交织", "清新水果蛋糕酸甜可口，柔软绵密", "精致马卡龙少女心爆棚，酥脆甜蜜", "清凉冰淇淋夏日必备，绵密丝滑"],
+                category: "dessert"
+            },
+            {
+                question: "你更喜欢哪种艺术形式？",
+                options: ["油画色彩斑斓表达，热情而直观", "音乐旋律触及心灵，抽象而动人", "舞蹈肢体表达情感，自由而优美", "雕塑立体质感独特，沉静而永恒"],
+                category: "art"
+            },
+            {
+                question: "你理想中的家居风格是？",
+                options: ["北欧风简约清爽，干净而明亮", "法式风浪漫优雅，复古而精致", "中式风古典韵味，含蓄而深沉", "现代风时尚个性，简约而功能"],
+                category: "homestyle"
+            },
+            {
+                question: "你最喜欢的运动是？",
+                options: ["瑜伽身心合一，柔韧而平静", "跑步释放多巴胺，自由而畅快", "游泳全身运动，清凉而舒展", "舞蹈表达自我，优雅而热情"],
+                category: "sport"
+            },
+            {
+                question: "你理想中的夜晚是？",
+                options: ["派对热舞尽情释放，激情而狂欢", "独处时光安静思考，沉静而充实", "浪漫约会烛光晚餐，甜蜜而温馨", "好友相聚把酒言欢，欢乐而畅快"],
+                category: "night"
+            },
+            {
+                question: "你最喜欢的季节是？",
+                options: ["春天万物复苏，生机而明媚", "夏天热情奔放，明朗而活力", "秋天金黄收获，浪漫而诗意", "冬天沉静内敛，温馨而慵懒"],
+                category: "season"
+            },
+            {
+                question: "你更喜欢哪种香调？",
+                options: ["清新花香如春风拂面，温柔而浪漫", "木质温暖如冬日拥抱，沉稳而安心", "东方神秘如夜幕降临，浓郁而深邃", "柑橘清爽如夏日海风，活泼而明亮"],
+                category: "fragrance"
+            },
+            {
+                question: "你理想中的阅读场景是？",
+                options: ["阳光洒满的飘窗上，温暖而惬意", "图书馆安静的角落，沉静而专注", "咖啡馆靠窗的位置，温馨而文艺", "卧室柔软的大床上，放松而舒适"],
+                category: "reading"
+            },
+            {
+                question: "你更喜欢哪种材质的触感？",
+                options: ["真丝滑如流水般细腻，高贵而优雅", "纯棉柔软透气舒适，随性而自在", "羊毛温暖厚实安心，慵懒而幸福", "皮质细腻有光泽，酷飒而精致"],
+                category: "texture"
+            },
+            {
+                question: "你理想中的爱情是？",
+                options: ["如火焰般热烈燃烧，激情而奔放", "如溪水般细水长流，平淡而真实", "如灵魂伴侣般契合，心动而默契", "如老夫妻般相敬如宾，温情而稳固"],
+                category: "love"
+            },
+            {
+                question: "你更喜欢哪种灯光氛围？",
+                options: ["自然光明亮通透，清爽而精神", "暖黄光温馨浪漫，温暖而放松", "蓝光静谧神秘，沉静而专注", "烛光摇曳柔和，醉人而浪漫"],
+                category: "light"
+            },
+            {
+                question: "你理想中的放松方式是？",
+                options: ["泡温泉舒缓身心，温暖而治愈", "做spa享受护理，精致而呵护", "听音乐沉浸旋律，放空而治愈", "冥想放空心灵，平静而专注"],
+                category: "relax"
+            },
+            {
+                question: "你更喜欢哪种气味？",
+                options: ["清晨草坪的青草香，清新而活力", "雨后森林的木质香，沉稳而安心", "花园里的花香馥郁，浪漫而迷人", "东方香料的神秘香，浓郁而深邃"],
+                category: "scent"
+            }
+        ];
+
+        const fragrances = [
+            {
+                name: "晨曦玫瑰",
+                category: "花香调",
+                icon: "🌹",
+                description: "如清晨第一缕阳光下的玫瑰，清新而优雅。这款香水融合了保加利亚玫瑰、牡丹和茉莉的芬芳，适合温柔浪漫的你。",
+                notes: ["玫瑰", "牡丹", "茉莉", "麝香"],
+                scores: { morning: 0, color: 1, drink: 1, summer: 2, personality: 1, environment: 2, flower: 0, character: 1, music: 0, occasion: 1 }
+            },
+            {
+                name: "海洋微风",
+                category: "海洋调",
+                icon: "🌊",
+                description: "仿佛置身于蔚蓝的海边，感受海风的轻抚。这款香水以海洋香调为主，搭配柑橘和雪松，适合清新自然的你。",
+                notes: ["海盐", "柑橘", "雪松", "麝香"],
+                scores: { morning: 0, color: 2, drink: 0, summer: 0, personality: 0, environment: 0, flower: 3, character: 0, music: 3, occasion: 0 }
+            },
+            {
+                name: "森林秘境",
+                category: "木质调",
+                icon: "🌲",
+                description: "带你走进神秘的森林深处，感受大自然的馈赠。这款香水融合了檀香、雪松和广藿香，适合独立自信的你。",
+                notes: ["檀香", "雪松", "广藿香", "琥珀"],
+                scores: { morning: 2, color: 2, drink: 2, summer: 3, personality: 2, environment: 1, flower: 3, character: 2, music: 0, occasion: 3 }
+            },
+            {
+                name: "繁花盛放",
+                category: "花香调",
+                icon: "🌺",
+                description: "如春日花园中盛开的繁花，绚烂而热烈。这款香水融合了晚香玉、依兰和橙花，适合外向开朗的你。",
+                notes: ["晚香玉", "依兰", "橙花", "香草"],
+                scores: { morning: 0, color: 0, drink: 3, summer: 2, personality: 0, environment: 3, flower: 1, character: 0, music: 3, occasion: 1 }
+            },
+            {
+                name: "东方夜曲",
+                category: "东方调",
+                icon: "🌙",
+                description: "如东方夜晚的神秘与优雅，深邃而迷人。这款香水融合了沉香、肉桂和零陵香豆，适合浪漫感性的你。",
+                notes: ["沉香", "肉桂", "零陵香豆", "琥珀"],
+                scores: { morning: 3, color: 3, drink: 3, summer: 3, personality: 1, environment: 2, flower: 2, character: 3, music: 1, occasion: 3 }
+            },
+            {
+                name: "清新晨露",
+                category: "柑橘调",
+                icon: "🍊",
+                description: "如清晨叶尖的露珠，清新而纯净。这款香水融合了佛手柑、柠檬和绿茶，适合内敛温柔的你。",
+                notes: ["佛手柑", "柠檬", "绿茶", "白麝香"],
+                scores: { morning: 0, color: 0, drink: 2, summer: 1, personality: 1, environment: 1, flower: 3, character: 1, music: 2, occasion: 0 }
+            },
+            {
+                name: "温柔茉莉",
+                category: "花香调",
+                icon: "🌸",
+                description: "如月光下的茉莉，温柔而纯净。这款香水融合了茉莉、铃兰和紫罗兰，适合温柔体贴的你。",
+                notes: ["茉莉", "铃兰", "紫罗兰", "白麝香"],
+                scores: { morning: 1, color: 1, drink: 2, summer: 2, personality: 1, environment: 2, flower: 1, character: 1, music: 0, occasion: 1 }
+            },
+            {
+                name: "琥珀时光",
+                category: "东方调",
+                icon: "✨",
+                description: "如琥珀中封存的时光，温暖而珍贵。这款香水融合了琥珀、香草和檀香，适合成熟优雅的你。",
+                notes: ["琥珀", "香草", "檀香", "麝香"],
+                scores: { morning: 3, color: 3, drink: 1, summer: 3, personality: 2, environment: 2, flower: 2, character: 2, music: 0, occasion: 3 }
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = {};
+
+        function startQuiz() {
+            document.getElementById('welcome-page').classList.remove('active');
+            document.getElementById('question-page').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question-number').textContent = `问题 ${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('question-text').textContent = question.question;
+            
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.onclick = () => selectOption(index, optionElement);
+                optionsContainer.appendChild(optionElement);
+            });
+        }
+
+        function selectOption(index, element) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+
+            const question = questions[currentQuestion];
+            answers[question.category] = index;
+
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }, 300);
+        }
+
+        function showResult() {
+            document.getElementById('question-page').classList.remove('active');
+            document.getElementById('result-page').classList.add('active');
+
+            let bestMatch = fragrances[0];
+            let bestScore = -1;
+
+            fragrances.forEach(fragrance => {
+                let score = 0;
+                Object.keys(answers).forEach(category => {
+                    if (fragrance.scores[category] !== undefined) {
+                        if (fragrance.scores[category] === answers[category]) {
+                            score += 2;
+                        } else if (Math.abs(fragrance.scores[category] - answers[category]) === 1) {
+                            score += 1;
+                        }
+                    }
+                });
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMatch = fragrance;
+                }
+            });
+
+            document.getElementById('fragrance-icon').textContent = bestMatch.icon;
+            document.getElementById('fragrance-name').textContent = bestMatch.name;
+            document.getElementById('fragrance-category').textContent = bestMatch.category;
+            document.getElementById('fragrance-description').textContent = bestMatch.description;
+
+            const notesContainer = document.getElementById('fragrance-notes');
+            notesContainer.innerHTML = '';
+            bestMatch.notes.forEach(note => {
+                const noteTag = document.createElement('div');
+                noteTag.className = 'note-tag';
+                noteTag.textContent = note;
+                notesContainer.appendChild(noteTag);
+            });
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            answers = {};
+            document.getElementById('result-page').classList.remove('active');
+            document.getElementById('welcome-page').classList.add('active');
+        }
+    </script>
+</body>
+</html>

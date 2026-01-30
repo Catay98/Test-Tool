@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心理测试</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%);
+            min-height: 100vh;
+            color: #2e7d32;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-page {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 600;
+            color: #1b5e20;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #4caf50;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .description {
+            font-size: 1rem;
+            color: #388e3c;
+            margin-bottom: 50px;
+            line-height: 2;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+            color: white;
+            border: none;
+            padding: 18px 60px;
+            font-size: 1.1rem;
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .question-page {
+            padding: 40px 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #c8e6c9;
+            border-radius: 2px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #66bb6a, #43a047);
+            transition: width 0.5s ease;
+            border-radius: 2px;
+        }
+
+        .question-number {
+            font-size: 0.9rem;
+            color: #4caf50;
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            color: #2e7d32;
+            margin-bottom: 40px;
+            text-align: center;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #c8e6c9;
+            padding: 18px 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            color: #33691e;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .option:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #66bb6a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 187, 106, 0.2);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+            color: white;
+            border-color: #43a047;
+        }
+
+        .result-page {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .result-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #1b5e20;
+            margin-bottom: 30px;
+            letter-spacing: 3px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(27, 94, 32, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .result-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: #2e7d32;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .result-category {
+            font-size: 0.95rem;
+            color: #4caf50;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .result-description {
+            font-size: 1rem;
+            color: #388e3c;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .result-traits {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .trait-tag {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            color: #33691e;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .result-image {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #66bb6a;
+            box-shadow: 0 10px 30px rgba(27, 94, 32, 0.2);
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+            color: white;
+            border: none;
+            padding: 16px 50px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(27, 94, 32, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(27, 94, 32, 0.4);
+        }
+
+        .decorative-element {
+            position: fixed;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .decorative-1 {
+            top: 10%;
+            left: 5%;
+            font-size: 8rem;
+            color: #66bb6a;
+        }
+
+        .decorative-2 {
+            bottom: 10%;
+            right: 5%;
+            font-size: 10rem;
+            color: #43a047;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .logo {
+                font-size: 2.5rem;
+                margin-bottom: 15px;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 30px;
+            }
+
+            .description {
+                font-size: 0.95rem;
+                margin-bottom: 40px;
+            }
+
+            .btn {
+                padding: 15px 45px;
+                font-size: 1rem;
+            }
+
+            .question-text {
+                font-size: 1.2rem;
+                margin-bottom: 30px;
+            }
+
+            .option {
+                padding: 15px 20px;
+                font-size: 0.95rem;
+            }
+
+            .result-title {
+                font-size: 2rem;
+                margin-bottom: 25px;
+            }
+
+            .result-card {
+                padding: 30px 20px;
+            }
+
+            .result-name {
+                font-size: 1.6rem;
+            }
+
+            .result-image {
+                height: 250px;
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+            }
+
+            .description {
+                font-size: 0.9rem;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .option {
+                padding: 12px 18px;
+                font-size: 0.9rem;
+            }
+
+            .result-name {
+                font-size: 1.4rem;
+            }
+
+            .result-image {
+                height: 200px;
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="decorative-element decorative-1">🌿</div>
+    <div class="decorative-element decorative-2">🌱</div>
+
+    <div class="container">
+        <div class="page active" id="welcome-page">
+            <div class="welcome-page">
+                <div class="logo">心理测试</div>
+                <div class="subtitle">DISCOVER YOUR INNER SELF</div>
+                <div class="description">
+                    通过25道精心设计的问题，深入探索你的内心世界，
+                    了解你的性格特质、情绪模式和行为习惯，
+                    发现真实的自己。
+                </div>
+                <button class="btn" onclick="startQuiz()">开始测试</button>
+            </div>
+        </div>
+
+        <div class="page" id="question-page">
+            <div class="question-page">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="question-number" id="question-number">问题 1 / 25</div>
+                <div class="question-text" id="question-text"></div>
+                <div class="options-container" id="options-container"></div>
+            </div>
+        </div>
+
+        <div class="page" id="result-page">
+            <div class="result-page">
+                <div class="result-title">你的心理类型</div>
+                <div class="result-card">
+                    <div class="result-image" id="result-icon">🧠</div>
+                    <div class="result-name" id="result-name"></div>
+                    <div class="result-category" id="result-category"></div>
+                    <div class="result-traits" id="result-traits"></div>
+                    <div class="result-description" id="result-description"></div>
+                </div>
+                <button class="restart-btn" onclick="restartQuiz()">重新测试</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "当你走进一个陌生的聚会，你会？",
+                options: ["主动与陌生人搭话，快速融入氛围", "先观察周围环境，寻找熟悉的面孔", "找个安静角落，等待他人主动", "在人群中游走，与不同的人短暂交流"],
+                category: "social"
+            },
+            {
+                question: "面对突如其来的压力，你的第一反应是？",
+                options: ["立即行动，寻找解决方案", "深呼吸冷静，分析问题根源", "寻求他人的帮助和建议", "暂时逃避，给自己缓冲时间"],
+                category: "stress"
+            },
+            {
+                question: "你更喜欢哪种类型的电影？",
+                options: ["烧脑悬疑片，享受推理的快感", "温馨爱情片，感受情感的温暖", "动作冒险片，体验刺激的快感", "文艺纪录片，思考人生的深度"],
+                category: "entertainment"
+            },
+            {
+                question: "朋友向你倾诉烦恼时，你通常会？",
+                options: ["理性分析，提供具体建议", "情感共鸣，给予温暖安慰", "转移注意力，带TA去做开心的事", "分享类似经历，让TA知道自己不孤单"],
+                category: "empathy"
+            },
+            {
+                question: "你理想中的周末是怎样的？",
+                options: ["户外探险，挑战新的活动", "宅家休息，享受独处时光", "朋友聚会，热闹而充实", "学习新技能，充实自我"],
+                category: "weekend"
+            },
+            {
+                question: "面对批评时，你的内心活动是？",
+                options: ["认真反思，寻找改进空间", "表面接受，内心不服", "立即反驳，维护自己的观点", "情绪低落，需要时间消化"],
+                category: "criticism"
+            },
+            {
+                question: "你更倾向于哪种工作方式？",
+                options: ["独立完成，享受自主权", "团队协作，碰撞思想火花", "领导团队，掌控整体进度", "支持他人，做好辅助工作"],
+                category: "work"
+            },
+            {
+                question: "当你感到孤独时，你会？",
+                options: ["主动联系朋友，寻求陪伴", "享受独处，做喜欢的事", "外出社交，结识新朋友", "通过阅读或创作，自我对话"],
+                category: "loneliness"
+            },
+            {
+                question: "你如何处理自己的情绪？",
+                options: ["直接表达，不压抑感受", "自我消化，通过运动或创作释放", "与信任的人分享，寻求理解", "理性分析，寻找情绪背后的原因"],
+                category: "emotion"
+            },
+            {
+                question: "面对选择困难时，你会？",
+                options: ["列出优缺点，理性分析", "听从直觉，相信第一感觉", "寻求他人意见，参考建议", "拖延时间，等待更明确的信号"],
+                category: "decision"
+            },
+            {
+                question: "你更看重哪种人际关系？",
+                options: ["深度而稳定的长期友谊", "广泛而多元的社交网络", "能够共同成长的伙伴关系", "轻松愉快的短暂相遇"],
+                category: "relationship"
+            },
+            {
+                question: "当你犯错时，你的反应是？",
+                options: ["立即承认，承担责任", "寻找借口，减轻自己的责任", "默默改正，不主动提及", "过度自责，陷入负面情绪"],
+                category: "mistake"
+            },
+            {
+                question: "你更喜欢哪种学习方式？",
+                options: ["理论先行，系统学习", "实践为主，边做边学", "讨论交流，在互动中理解", "独立探索，自我发现"],
+                category: "learning"
+            },
+            {
+                question: "面对成功时，你的心态是？",
+                options: ["享受成就，但保持谦逊", "立即分享，希望获得认可", "冷静分析，寻找可改进之处", "担心失去，产生焦虑感"],
+                category: "success"
+            },
+            {
+                question: "你如何应对生活中的变化？",
+                options: ["积极拥抱，期待新的可能", "谨慎观察，评估风险后再行动", "感到不安，需要时间适应", "抗拒变化，倾向于保持现状"],
+                category: "change"
+            },
+            {
+                question: "你更倾向于哪种沟通风格？",
+                options: ["直接坦诚，不绕弯子", "委婉含蓄，考虑他人感受", "幽默风趣，轻松表达", "理性客观，注重逻辑"],
+                category: "communication"
+            },
+            {
+                question: "当你感到疲惫时，你会？",
+                options: ["坚持完成，不愿拖延", "短暂休息，然后继续", "彻底放松，给自己充电时间", "寻求他人帮助，分担压力"],
+                category: "fatigue"
+            },
+            {
+                question: "你如何看待金钱？",
+                options: ["安全感的来源，需要谨慎管理", "享受生活的工具，适度消费", "实现目标的手段，投资未来", "身外之物，不应过分看重"],
+                category: "money"
+            },
+            {
+                question: "面对冲突时，你会？",
+                options: ["主动沟通，寻求解决方案", "退让妥协，维持和谐", "坚持立场，不轻易让步", "暂时回避，等待冷静后再处理"],
+                category: "conflict"
+            },
+            {
+                question: "你更欣赏哪种人格特质？",
+                options: ["勇敢果断，敢于冒险", "温和善良，富有同情心", "聪明睿智，善于思考", "幽默风趣，带来快乐"],
+                category: "value"
+            },
+            {
+                question: "当你感到焦虑时，你会？",
+                options: ["制定计划，掌控不确定性", "运动冥想，缓解身心压力", "找人倾诉，获得情感支持", "转移注意力，做喜欢的事"],
+                category: "anxiety"
+            },
+            {
+                question: "你如何看待自己的过去？",
+                options: ["宝贵的经历，塑造了今天的我", "充满遗憾，希望能重新选择", "已经过去，不愿过多回顾", "复杂交织，有美好也有痛苦"],
+                category: "past"
+            },
+            {
+                question: "你更倾向于哪种生活方式？",
+                options: ["快节奏，充满挑战和刺激", "慢生活，享受当下的宁静", "平衡发展，工作与生活兼顾", "灵活多变，根据心情调整"],
+                category: "lifestyle"
+            },
+            {
+                question: "面对他人的成功，你会？",
+                options: ["真诚祝贺，为TA感到高兴", "内心羡慕，希望也能如此", "理性分析，学习TA的优点", "感到压力，担心自己落后"],
+                category: "envy"
+            },
+            {
+                question: "你如何看待未来？",
+                options: ["充满希望，相信会越来越好", "谨慎乐观，做好应对准备", "不确定，顺其自然发展", "有些担忧，担心未知的风险"],
+                category: "future"
+            }
+        ];
+
+        const results = [
+            {
+                name: "理性分析型",
+                category: "理性主义者",
+                icon: "🧠",
+                description: "你是一个以理性思维为主导的人，善于逻辑分析和客观判断。在面对问题时，你倾向于通过理性分析找到最优解决方案，而不是被情绪左右。你重视事实和证据，决策过程严谨而系统。你的优势在于能够冷静地处理复杂情况，在压力下保持清晰的思维。你可能有时被认为过于理性，但这正是你独特的魅力所在——你能够在混乱中找到秩序，在不确定中找到确定性。你的理性思维让你在工作和学习中表现出色，特别是在需要逻辑推理和系统思考的领域。同时，你的理性也为你提供了稳定的情感基础，让你能够更好地理解和管理自己的情绪。建议你在保持理性的同时，也适当关注情感需求，这样你会成为一个更加全面和平衡的人。",
+                traits: ["逻辑性强", "冷静客观", "善于分析", "决策果断"]
+            },
+            {
+                name: "情感共鸣型",
+                category: "情感主义者",
+                icon: "💖",
+                description: "你是一个情感丰富、富有同理心的人，能够深刻地感受和理解他人的情绪。你的情感雷达非常敏锐，能够察觉到他人细微的情绪变化，并给予恰当的回应。你重视人际关系中的情感连接，善于营造温暖和谐的氛围。你的优势在于能够与他人建立深厚的情感纽带，在团队中扮演着情感支持者的角色。你的同理心让你成为朋友和家人眼中的倾听者和安慰者，人们愿意向你倾诉内心的烦恼。你的情感深度也让你在艺术创作和人际交往中表现出色。然而，过于敏感有时会让你受到他人情绪的影响，建议你在保持同理心的同时，学会建立健康的情感边界，这样既能保护自己，又能更好地帮助他人。",
+                traits: ["同理心强", "情感丰富", "善于倾听", "温暖体贴"]
+            },
+            {
+                name: "行动导向型",
+                category: "实践主义者",
+                icon: "⚡",
+                description: "你是一个行动力强、敢于冒险的人，喜欢通过实践来探索世界。你相信行动胜过空谈，面对挑战时总是第一个冲上前的人。你的活力和热情具有感染力，能够激励身边的人一起行动。你的优势在于执行力强，能够将想法迅速转化为现实。你不怕失败，视每一次尝试为学习和成长的机会。这种积极进取的态度让你在创业、体育和需要快速反应的领域表现出色。你的行动力也让你成为团队中的推动者，能够在关键时刻带领大家突破困境。然而，有时过于冲动可能会让你忽视细节，建议你在保持行动力的同时，学会在行动前进行适当的规划和思考，这样会让你的努力更加高效和有方向。",
+                traits: ["行动力强", "敢于冒险", "执行力高", "积极进取"]
+            },
+            {
+                name: "平衡和谐型",
+                category: "和谐主义者",
+                icon: "🌸",
+                description: "你是一个追求平衡与和谐的人，善于在不同方面之间找到最佳的平衡点。你既理性又感性，既独立又善于合作，能够在不同的情境中灵活调整自己的行为。你重视内心的平静和外在的和谐，努力营造一个稳定而舒适的生活环境。你的优势在于适应性强，能够在各种情况下保持内心的稳定。你是一个很好的调解者，能够在冲突中找到双方都能接受的解决方案。你的平衡感也让你在人际关系中备受欢迎，因为你既不会过于强势，也不会过于被动。你的生活哲学是中庸之道，相信过犹不及。这种平衡的态度让你在人生道路上走得稳健而从容。建议你在追求平衡的同时，也允许自己偶尔的偏执和激情，这样会让你的生活更加丰富多彩。",
+                traits: ["适应性强", "善于平衡", "温和稳重", "调解能力"]
+            },
+            {
+                name: "探索创新型",
+                category: "创新主义者",
+                icon: "🚀",
+                description: "你是一个充满好奇心和创造力的人，总是渴望探索未知的领域。你的思维跳跃而灵活，能够从不同的角度看待问题，找到独特的解决方案。你不喜欢墨守成规，总是尝试新的方法和思路。你的优势在于创新能力强，能够在传统框架之外找到突破点。你的好奇心让你成为知识的探索者，对世界保持着持续的兴趣和热情。你的创造力也让你在艺术、科技和需要原创性的领域表现出色。你是一个天生的发明家和梦想家，能够将看似无关的事物联系起来，创造出新的可能性。然而，有时过于追求新颖可能会让你忽视实用性，建议你在保持创新的同时，也考虑将想法付诸实践的可能性，这样会让你的创意产生更大的价值。",
+                traits: ["好奇心强", "创造力丰富", "思维灵活", "敢于突破"]
+            },
+            {
+                name: "内省成长型",
+                category: "成长主义者",
+                icon: "🌱",
+                description: "你是一个注重内心成长和自我提升的人，善于通过反思来认识自己。你花很多时间思考人生的意义和自己的行为模式，不断寻求成为更好的自己。你的内省能力让你拥有深刻的自我认知，能够清晰地了解自己的优点和不足。你的优势在于成长意识强，将每一次经历都视为学习和进步的机会。你是一个持续的学习者，不满足于现状，总是在寻求新的知识和技能。你的内省也让你在精神追求和哲学思考方面表现出色。你的人生哲学是终身学习，相信通过不断的努力和反思，可以实现自我超越。然而，有时过度内省可能会让你陷入自我怀疑，建议你在保持成长心态的同时，也学会欣赏当下的自己，接受不完美也是成长的一部分。",
+                traits: ["自我认知深", "成长意识强", "善于反思", "持续学习"]
+            },
+            {
+                name: "社交魅力型",
+                category: "社交主义者",
+                icon: "🌟",
+                description: "你是一个天生具有社交魅力的人，善于与人建立联系和营造愉快的氛围。你的外向性格和幽默感让你在各种场合都能轻松融入，成为人群中的焦点。你重视人际关系，善于维护和扩展自己的社交网络。你的优势在于沟通能力强，能够与不同背景的人建立良好的关系。你的魅力让你在销售、公关和需要人际交往的领域表现出色。你是一个天生的社交家，能够在陌生人之间架起沟通的桥梁。你的社交能力也让你成为团队中的粘合剂，能够协调不同成员之间的关系，促进团队的合作。然而，有时过于关注他人可能会让你忽视自己的需求，建议你在保持社交魅力的同时，也学会说\"不\"，为自己留出独处和充电的时间。",
+                traits: ["社交能力强", "沟通力好", "幽默风趣", "人缘极佳"]
+            },
+            {
+                name: "独立自主型",
+                category: "独立主义者",
+                icon: "🦅",
+                description: "你是一个高度独立的人，喜欢按照自己的节奏和方式生活。你不依赖他人的认可，有自己的价值观和判断标准。你的独立性让你在压力下依然能够保持自己的立场，不轻易被外界影响。你的优势在于自主性强，能够独立思考和决策。你是一个可靠的个体，不随波逐流，有自己的原则和底线。你的独立性也让你在需要独自完成的任务中表现出色，因为你不需要外界的监督和指导。你的人生哲学是自力更生，相信通过自己的努力可以实现目标。然而，有时过于独立可能会让你错过合作的机会，建议你在保持独立性的同时，也学会在适当的时候寻求和接受他人的帮助，这样会让你的人生之路更加宽广。",
+                traits: ["独立性强", "自主决策", "原则坚定", "自我依靠"]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = {};
+
+        function startQuiz() {
+            document.getElementById('welcome-page').classList.remove('active');
+            document.getElementById('question-page').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question-number').textContent = `问题 ${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('question-text').textContent = question.question;
+            
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.onclick = () => selectOption(index, optionElement);
+                optionsContainer.appendChild(optionElement);
+            });
+        }
+
+        function selectOption(index, element) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+
+            const question = questions[currentQuestion];
+            answers[question.category] = index;
+
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }, 300);
+        }
+
+        function showResult() {
+            document.getElementById('question-page').classList.remove('active');
+            document.getElementById('result-page').classList.add('active');
+
+            let bestMatch = results[0];
+            let bestScore = -1;
+
+            results.forEach((result, index) => {
+                let score = 0;
+                Object.keys(answers).forEach(category => {
+                    if (answers[category] === index % 4) {
+                        score += 2;
+                    } else if (Math.abs(answers[category] - index % 4) === 1 || Math.abs(answers[category] - index % 4) === 3) {
+                        score += 1;
+                    }
+                });
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMatch = result;
+                }
+            });
+
+            document.getElementById('result-icon').textContent = bestMatch.icon;
+            document.getElementById('result-name').textContent = bestMatch.name;
+            document.getElementById('result-category').textContent = bestMatch.category;
+            document.getElementById('result-description').textContent = bestMatch.description;
+
+            const traitsContainer = document.getElementById('result-traits');
+            traitsContainer.innerHTML = '';
+            bestMatch.traits.forEach(trait => {
+                const traitTag = document.createElement('div');
+                traitTag.className = 'trait-tag';
+                traitTag.textContent = trait;
+                traitsContainer.appendChild(traitTag);
+            });
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            answers = {};
+            document.getElementById('result-page').classList.remove('active');
+            document.getElementById('welcome-page').classList.add('active');
+        }
+    </script>
+</body>
+</html>

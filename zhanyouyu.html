@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>占有欲测试</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%);
+            min-height: 100vh;
+            color: #1b5e20;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-page {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 600;
+            color: #2e7d32;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #388e3c;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .description {
+            font-size: 1rem;
+            color: #1b5e20;
+            margin-bottom: 50px;
+            line-height: 2;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+            color: white;
+            border: none;
+            padding: 18px 60px;
+            font-size: 1.1rem;
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .question-page {
+            padding: 40px 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #c8e6c9;
+            border-radius: 2px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #43a047, #2e7d32);
+            transition: width 0.5s ease;
+            border-radius: 2px;
+        }
+
+        .question-number {
+            font-size: 0.9rem;
+            color: #388e3c;
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            color: #1b5e20;
+            margin-bottom: 40px;
+            text-align: center;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #c8e6c9;
+            padding: 18px 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            color: #1b5e20;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .option:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #43a047;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(67, 160, 71, 0.2);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+            color: white;
+            border-color: #2e7d32;
+        }
+
+        .result-page {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .result-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #2e7d32;
+            margin-bottom: 30px;
+            letter-spacing: 3px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(46, 125, 50, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .result-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: #1b5e20;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .result-category {
+            font-size: 0.95rem;
+            color: #388e3c;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .result-description {
+            font-size: 1rem;
+            color: #1b5e20;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .result-traits {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .trait-tag {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            color: #1b5e20;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .result-image {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #43a047;
+            box-shadow: 0 10px 30px rgba(46, 125, 50, 0.2);
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            border: none;
+            padding: 16px 50px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(27, 94, 32, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(27, 94, 32, 0.4);
+        }
+
+        .decorative-element {
+            position: fixed;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .decorative-1 {
+            top: 10%;
+            left: 5%;
+            font-size: 8rem;
+            color: #43a047;
+        }
+
+        .decorative-2 {
+            bottom: 10%;
+            right: 5%;
+            font-size: 10rem;
+            color: #2e7d32;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .logo {
+                font-size: 2.5rem;
+                margin-bottom: 15px;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 30px;
+            }
+
+            .description {
+                font-size: 0.95rem;
+                margin-bottom: 40px;
+            }
+
+            .btn {
+                padding: 15px 45px;
+                font-size: 1rem;
+            }
+
+            .question-text {
+                font-size: 1.2rem;
+                margin-bottom: 30px;
+            }
+
+            .option {
+                padding: 15px 20px;
+                font-size: 0.95rem;
+            }
+
+            .result-title {
+                font-size: 2rem;
+                margin-bottom: 25px;
+            }
+
+            .result-card {
+                padding: 30px 20px;
+            }
+
+            .result-name {
+                font-size: 1.6rem;
+            }
+
+            .result-image {
+                height: 250px;
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+            }
+
+            .description {
+                font-size: 0.9rem;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .option {
+                padding: 12px 18px;
+                font-size: 0.9rem;
+            }
+
+            .result-name {
+                font-size: 1.4rem;
+            }
+
+            .result-image {
+                height: 200px;
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="decorative-element decorative-1">🌿</div>
+    <div class="decorative-element decorative-2">🌱</div>
+
+    <div class="container">
+        <div class="page active" id="welcome-page">
+            <div class="welcome-page">
+                <div class="logo">占有欲测试</div>
+                <div class="subtitle">POSSESSIVENESS TEST</div>
+                <div class="description">
+                    通过20道关于人际关系的问题，评估你的整体占有欲水平。
+                    了解你在友谊、工作、家庭等各个方面的控制欲和占有欲。
+                    这是一个自我认知的工具，帮助你建立更健康的人际关系。
+                </div>
+                <button class="btn" onclick="startQuiz()">开始测试</button>
+            </div>
+        </div>
+
+        <div class="page" id="question-page">
+            <div class="question-page">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="question-number" id="question-number">问题 1 / 20</div>
+                <div class="question-text" id="question-text"></div>
+                <div class="options-container" id="options-container"></div>
+            </div>
+        </div>
+
+        <div class="page" id="result-page">
+            <div class="result-page">
+                <div class="result-title">你的占有欲评估</div>
+                <div class="result-card">
+                    <div class="result-image" id="result-icon">🌳</div>
+                    <div class="result-name" id="result-name"></div>
+                    <div class="result-category" id="result-category"></div>
+                    <div class="result-traits" id="result-traits"></div>
+                    <div class="result-description" id="result-description"></div>
+                </div>
+                <button class="restart-btn" onclick="restartQuiz()">重新测试</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "当朋友与其他人建立深厚友谊时，你会？",
+                options: ["感到被背叛，希望TA只和我做朋友", "有些失落，但理解这是正常的", "为TA感到高兴，支持TA的社交", "完全不在意，认为每个人都有自己的社交圈"],
+                category: "friendship"
+            },
+            {
+                question: "在工作中，当同事获得你想要的职位时，你的反应是？",
+                options: ["强烈不满，认为这不公平", "有些嫉妒，但努力接受", "为同事感到高兴，继续努力", "完全不在意，专注于自己的工作"],
+                category: "work"
+            },
+            {
+                question: "你如何对待自己的物品和空间？",
+                options: ["非常在意，不允许他人触碰", "有些在意，但可以接受亲密的人使用", "比较开放，愿意分享", "完全不在意，乐于分享"],
+                category: "possessions"
+            },
+            {
+                question: "当家人关注其他兄弟姐妹时，你会？",
+                options: ["感到被忽视，希望获得更多关注", "有些失落，但理解家人需要平衡", "为兄弟姐妹感到高兴", "完全不在意，认为这是正常的"],
+                category: "family"
+            },
+            {
+                question: "你如何看待团队合作中的功劳分配？",
+                options: ["希望功劳主要归自己", "希望获得应得的认可", "愿意分享功劳，但希望被看见", "完全不在意，只要团队成功就好"],
+                category: "teamwork"
+            },
+            {
+                question: "当你的想法被他人采纳时，你会？",
+                options: ["希望被明确提及和认可", "有些在意，但可以接受不被提及", "为想法被采纳感到高兴", "完全不在意，认为结果最重要"],
+                category: "ideas"
+            },
+            {
+                question: "你如何对待自己的时间和日程？",
+                options: ["非常严格，不喜欢被打扰", "有些在意，但可以接受紧急情况", "比较灵活，愿意为他人调整", "完全开放，随时可以调整"],
+                category: "time"
+            },
+            {
+                question: "当他人借用你的物品时，你会？",
+                options: ["非常不情愿，担心损坏或丢失", "有些犹豫，但最终会借", "愿意借出，但希望被妥善对待", "完全不在意，乐于帮助他人"],
+                category: "sharing"
+            },
+            {
+                question: "你如何看待竞争？",
+                options: ["非常在意，必须赢过他人", "有些在意，希望表现优秀", "享受竞争，但更关注自我提升", "完全不在意，认为合作更重要"],
+                category: "competition"
+            },
+            {
+                question: "当你的秘密被他人知道时，你会？",
+                options: ["非常愤怒，认为被背叛", "有些不悦，但理解这是难免的", "有些失望，但不会过度反应", "完全不在意，认为秘密总会被知道"],
+                category: "secrets"
+            },
+            {
+                question: "你如何对待自己的成就？",
+                options: ["希望获得所有人的认可和赞扬", "希望获得重要人的认可", "为自己感到高兴，不需要外界认可", "完全不在意，认为成就只是过程"],
+                category: "achievements"
+            },
+            {
+                question: "当他人对你的生活提出建议时，你会？",
+                options: ["非常反感，认为这是干涉", "有些抵触，但会考虑", "愿意听取，但自己做决定", "完全开放，欢迎所有建议"],
+                category: "advice"
+            },
+            {
+                question: "你如何看待自己的独特性？",
+                options: ["希望被特别对待，与众不同", "有些在意，希望被认可", "接受自己的独特性，但不在意是否被认可", "完全不在意，认为每个人都是独特的"],
+                category: "uniqueness"
+            },
+            {
+                question: "当他人批评你的观点时，你会？",
+                options: ["非常愤怒，认为这是攻击", "有些不悦，但努力接受", "欢迎批评，认为这是成长的机会", "完全不在意，认为观点可以不同"],
+                category: "criticism"
+            },
+            {
+                question: "你如何对待自己的知识或技能？",
+                options: ["希望保持独特，不愿分享", "有些在意，但愿意帮助他人", "乐于分享，希望他人也能受益", "完全开放，希望知识传播"],
+                category: "knowledge"
+            },
+            {
+                question: "当他人模仿你的风格或行为时，你会？",
+                options: ["非常不悦，认为这是抄袭", "有些在意，但可以接受", "感到被认可，有些高兴", "完全不在意，认为这是正常的"],
+                category: "imitation"
+            },
+            {
+                question: "你如何看待自己的地位或身份？",
+                options: ["非常在意，希望保持优越地位", "有些在意，希望被尊重", "接受自己的地位，不在意比较", "完全不在意，认为地位不重要"],
+                category: "status"
+            },
+            {
+                question: "当他人进入你的领域或专长时，你会？",
+                options: ["非常警惕，希望保持优势", "有些在意，但愿意竞争", "欢迎竞争，认为这是进步的机会", "完全不在意，认为领域应该开放"],
+                category: "territory"
+            },
+            {
+                question: "你如何对待自己的情感？",
+                options: ["非常保护，不愿轻易展示", "有些谨慎，但会向信任的人展示", "愿意分享，认为情感需要表达", "完全开放，认为情感应该自由流动"],
+                category: "emotions"
+            },
+            {
+                question: "当他人获得你渴望的东西时，你会？",
+                options: ["非常嫉妒，认为这不公平", "有些嫉妒，但努力接受", "为他人感到高兴，继续努力", "完全不在意，认为每个人都有自己的道路"],
+                category: "desire"
+            }
+        ];
+
+        const results = [
+            {
+                name: "高度占有欲",
+                category: "High Possessiveness",
+                icon: "🍂",
+                description: "根据你的回答，你在人际关系中表现出高度的占有欲。这意味着你对身边的人、事物和成就有强烈的控制欲和独占欲。你可能发现自己经常感到嫉妒、不安或愤怒，当他人接近你珍视的人或事物时。你的高度占有欲可能源于不安全感、过去的创伤或对失去的恐惧。这种行为模式可能让你在友谊、工作、家庭等各个方面都面临挑战，因为你的控制欲可能会让他人感到窒息和不被信任。你可能发现自己难以分享、难以接受他人的成功或幸福，甚至可能因为占有欲而破坏原本健康的关系。高度占有欲不仅会影响你的人际关系，也会影响你自己的幸福感和心理健康。建议你深入探索自己占有欲的根源，可能需要专业的心理咨询来帮助你理解和处理这些不安全感。学会信任、分享和放手是建立健康人际关系的关键，你值得拥有更自由、更幸福的关系。",
+                traits: ["控制欲强", "嫉妒心重", "不安全感高", "难以分享"]
+            },
+            {
+                name: "中等占有欲",
+                category: "Moderate Possessiveness",
+                icon: "🌿",
+                description: "根据你的回答，你在人际关系中表现出中等的占有欲。这意味着你对身边的人、事物和成就有一定的控制欲和独占欲，但在许多情况下能够理解和接受分享。你可能在某些方面表现出占有欲，比如对亲密的朋友或重要的成就有些在意，但在其他方面能够更加开放和包容。你的中等占有欲可能源于一定的不安全感或对失去的担忧，但你的理性思维让你能够在一些情况下控制这些冲动。这种水平的占有欲在人际关系中相对常见，但仍然需要被关注和管理。你可能发现自己有时会感到嫉妒或不安，但能够通过理性思考来调整自己的态度。建议你继续发展自己的分享和信任能力，学会区分合理的关心和过度的占有。你可以在保持关心的同时，给予他人更多的自由和空间，这样会让你的人际关系更加健康和长久。",
+                traits: ["适度控制", "偶尔嫉妒", "有分享意识", "需要平衡"]
+            },
+            {
+                name: "低度占有欲",
+                category: "Low Possessiveness",
+                icon: "🌱",
+                description: "根据你的回答，你在人际关系中表现出低度的占有欲。这意味着你对身边的人、事物和成就有较高的分享和包容能力，能够接受他人的独立性和多样性。你理解健康的人际关系需要双方的自由和空间，不会过度控制或独占。你的低占有欲源于较强的安全感和对关系的信心，你相信自己的价值，也相信他人不会轻易离开你。你可能发现自己乐于分享、愿意支持他人的成功和幸福，对亲密关系的独立性持开放和支持的态度。这种态度让他人感到被信任和尊重，有助于建立健康、平等的人际关系。然而，低占有欲并不意味着你不关心他人，而是你用更健康的方式表达关心。建议你继续保持这种健康的分享和包容，同时也要注意在适当的时候表达自己的需求和感受。健康的人际关系需要双方的相互信任和独立，你的态度为这种关系模式提供了良好的基础。",
+                traits: ["分享能力强", "包容度高", "安全感强", "关系健康"]
+            },
+            {
+                name: "健康平衡",
+                category: "Healthy Balance",
+                icon: "🌳",
+                description: "根据你的回答，你在人际关系中表现出健康的平衡。这意味着你能够在关心、分享和独立之间找到完美的平衡点。你既关心身边的人，又尊重他们的独立性和个人空间。你既重视自己的成就，又能够欣赏他人的成功。你的人际关系模式是理想的，因为你既不会过度控制，也不会完全忽视。你有较强的安全感和自信，这让你能够信任他人，给予他们充分的自由和支持。你的健康平衡可能源于成熟的情感认知和良好的自我价值感。你理解健康的人际关系需要双方的相互信任、独立性和适度的关心。你可能发现自己能够在大多数情况下做出合理的判断，区分正常的关心和过度的占有。建议你继续保持这种健康的平衡，这是建立长期、幸福人际关系的基石。你可以成为他人的榜样，展示如何在人际关系中保持关心和自由的平衡。",
+                traits: ["完美平衡", "成熟自信", "相互信任", "关系理想"]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = {};
+
+        function startQuiz() {
+            document.getElementById('welcome-page').classList.remove('active');
+            document.getElementById('question-page').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question-number').textContent = `问题 ${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('question-text').textContent = question.question;
+            
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.onclick = () => selectOption(index, optionElement);
+                optionsContainer.appendChild(optionElement);
+            });
+        }
+
+        function selectOption(index, element) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+
+            const question = questions[currentQuestion];
+            answers[question.category] = index;
+
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }, 300);
+        }
+
+        function showResult() {
+            document.getElementById('question-page').classList.remove('active');
+            document.getElementById('result-page').classList.add('active');
+
+            let totalScore = 0;
+            Object.values(answers).forEach(value => {
+                totalScore += value;
+            });
+
+            let result;
+            if (totalScore <= 25) {
+                result = results[3];
+            } else if (totalScore <= 40) {
+                result = results[2];
+            } else if (totalScore <= 55) {
+                result = results[1];
+            } else {
+                result = results[0];
+            }
+
+            document.getElementById('result-icon').textContent = result.icon;
+            document.getElementById('result-name').textContent = result.name;
+            document.getElementById('result-category').textContent = result.category;
+            document.getElementById('result-description').textContent = result.description;
+
+            const traitsContainer = document.getElementById('result-traits');
+            traitsContainer.innerHTML = '';
+            result.traits.forEach(trait => {
+                const traitTag = document.createElement('div');
+                traitTag.className = 'trait-tag';
+                traitTag.textContent = trait;
+                traitsContainer.appendChild(traitTag);
+            });
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            answers = {};
+            document.getElementById('result-page').classList.remove('active');
+            document.getElementById('welcome-page').classList.add('active');
+        }
+    </script>
+</body>
+</html>

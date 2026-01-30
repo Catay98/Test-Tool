@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPI恋爱占有欲测试</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, #fce4ec 0%, #f8d7da 50%, #f48fb1 100%);
+            min-height: 100vh;
+            color: #880e4f;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-page {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 600;
+            color: #ad1457;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #c2185b;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .description {
+            font-size: 1rem;
+            color: #880e4f;
+            margin-bottom: 50px;
+            line-height: 2;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ec407a 0%, #d81b60 100%);
+            color: white;
+            border: none;
+            padding: 18px 60px;
+            font-size: 1.1rem;
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(216, 27, 96, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(216, 27, 96, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .question-page {
+            padding: 40px 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #f8d7da;
+            border-radius: 2px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ec407a, #d81b60);
+            transition: width 0.5s ease;
+            border-radius: 2px;
+        }
+
+        .question-number {
+            font-size: 0.9rem;
+            color: #c2185b;
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            color: #880e4f;
+            margin-bottom: 40px;
+            text-align: center;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #f8d7da;
+            padding: 18px 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            color: #880e4f;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .option:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #ec407a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(236, 64, 122, 0.2);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, #ec407a 0%, #d81b60 100%);
+            color: white;
+            border-color: #d81b60;
+        }
+
+        .result-page {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .result-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #ad1457;
+            margin-bottom: 30px;
+            letter-spacing: 3px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(173, 20, 87, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .result-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: #880e4f;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .result-category {
+            font-size: 0.95rem;
+            color: #c2185b;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .result-description {
+            font-size: 1rem;
+            color: #880e4f;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .result-traits {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .trait-tag {
+            background: linear-gradient(135deg, #fce4ec 0%, #f8d7da 100%);
+            color: #880e4f;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .result-image {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #fce4ec 0%, #f8d7da 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #ec407a;
+            box-shadow: 0 10px 30px rgba(173, 20, 87, 0.2);
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #ad1457 0%, #880e4f 100%);
+            color: white;
+            border: none;
+            padding: 16px 50px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(136, 14, 79, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(136, 14, 79, 0.4);
+        }
+
+        .decorative-element {
+            position: fixed;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .decorative-1 {
+            top: 10%;
+            left: 5%;
+            font-size: 8rem;
+            color: #ec407a;
+        }
+
+        .decorative-2 {
+            bottom: 10%;
+            right: 5%;
+            font-size: 10rem;
+            color: #d81b60;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .logo {
+                font-size: 2.5rem;
+                margin-bottom: 15px;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 30px;
+            }
+
+            .description {
+                font-size: 0.95rem;
+                margin-bottom: 40px;
+            }
+
+            .btn {
+                padding: 15px 45px;
+                font-size: 1rem;
+            }
+
+            .question-text {
+                font-size: 1.2rem;
+                margin-bottom: 30px;
+            }
+
+            .option {
+                padding: 15px 20px;
+                font-size: 0.95rem;
+            }
+
+            .result-title {
+                font-size: 2rem;
+                margin-bottom: 25px;
+            }
+
+            .result-card {
+                padding: 30px 20px;
+            }
+
+            .result-name {
+                font-size: 1.6rem;
+            }
+
+            .result-image {
+                height: 250px;
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+            }
+
+            .description {
+                font-size: 0.9rem;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .option {
+                padding: 12px 18px;
+                font-size: 0.9rem;
+            }
+
+            .result-name {
+                font-size: 1.4rem;
+            }
+
+            .result-image {
+                height: 200px;
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="decorative-element decorative-1">💕</div>
+    <div class="decorative-element decorative-2">💗</div>
+
+    <div class="container">
+        <div class="page active" id="welcome-page">
+            <div class="welcome-page">
+                <div class="logo">RPI恋爱占有欲</div>
+                <div class="subtitle">RELATIONSHIP POSSESSIVENESS TEST</div>
+                <div class="description">
+                    通过20道恋爱关系问题，评估你在亲密关系中的占有欲水平。
+                    了解你如何在关系中平衡信任、独立与控制。
+                    这是一个自我认知的工具，帮助你建立更健康的恋爱模式。
+                </div>
+                <button class="btn" onclick="startQuiz()">开始测试</button>
+            </div>
+        </div>
+
+        <div class="page" id="question-page">
+            <div class="question-page">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="question-number" id="question-number">问题 1 / 20</div>
+                <div class="question-text" id="question-text"></div>
+                <div class="options-container" id="options-container"></div>
+            </div>
+        </div>
+
+        <div class="page" id="result-page">
+            <div class="result-page">
+                <div class="result-title">你的恋爱占有欲评估</div>
+                <div class="result-card">
+                    <div class="result-image" id="result-icon">💘</div>
+                    <div class="result-name" id="result-name"></div>
+                    <div class="result-category" id="result-category"></div>
+                    <div class="result-traits" id="result-traits"></div>
+                    <div class="result-description" id="result-description"></div>
+                </div>
+                <button class="restart-btn" onclick="restartQuiz()">重新测试</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "当伴侣与异性朋友单独见面时，你会？",
+                options: ["感到不安，想要了解详情", "有些担心，但选择信任", "完全信任，不觉得有问题", "鼓励TA的社交自由"],
+                category: "jealousy"
+            },
+            {
+                question: "你如何看待伴侣的手机隐私？",
+                options: ["想要随时查看，确保安全", "偶尔会好奇，想看内容", "尊重隐私，除非有可疑", "完全信任，从不查看"],
+                category: "privacy"
+            },
+            {
+                question: "当伴侣晚归且没有提前告知时，你的反应是？",
+                options: ["非常焦虑，立即联系", "有些担心，等待解释", "理解情况，不急于联系", "完全不在意，相信TA有原因"],
+                category: "communication"
+            },
+            {
+                question: "你如何对待伴侣的异性同事？",
+                options: ["感到威胁，希望减少接触", "有些在意，会询问情况", "理解工作关系，不特别在意", "支持TA的职场社交"],
+                category: "workplace"
+            },
+            {
+                question: "当伴侣夸赞其他人时，你会？",
+                options: ["感到不悦，表达不满", "内心有些吃醋，但表面接受", "理解这是正常社交", "为TA的社交能力感到高兴"],
+                category: "praise"
+            },
+            {
+                question: "你如何看待伴侣的独立时间？",
+                options: ["希望尽可能多时间在一起", "理解需要，但希望更多联系", "支持TA的独立和自由", "鼓励TA追求自己的兴趣"],
+                category: "independence"
+            },
+            {
+                question: "当伴侣与前任联系时，你的态度是？",
+                options: ["强烈反对，要求断绝联系", "感到不安，希望了解原因", "理解情况，但保持警惕", "完全信任，不干预TA的决定"],
+                category: "ex_partner"
+            },
+            {
+                question: "你如何处理伴侣的社交媒体互动？",
+                options: ["经常查看TA的动态和互动", "偶尔关注，确保没有异常", "尊重TA的社交自由", "完全不关注，认为这不重要"],
+                category: "social_media"
+            },
+            {
+                question: "当伴侣参加有异性的聚会时，你会？",
+                options: ["想要陪同，或者要求早回", "有些担心，会询问详情", "理解这是正常社交", "鼓励TA享受聚会"],
+                category: "parties"
+            },
+            {
+                question: "你如何看待伴侣的个人空间？",
+                options: ["希望随时能联系到TA", "理解需要，但希望保持联系", "尊重TA的空间和隐私", "鼓励TA享受独处时间"],
+                category: "personal_space"
+            },
+            {
+                question: "当伴侣与其他人建立深厚友谊时，你会？",
+                options: ["感到威胁，希望减少这种关系", "有些吃醋，但努力接受", "理解这是正常的人际关系", "支持TA的社交发展"],
+                category: "friendships"
+            },
+            {
+                question: "你如何对待伴侣的过去感情经历？",
+                options: ["经常提起，希望了解所有细节", "偶尔好奇，但不想知道太多", "尊重TA的过去，不主动询问", "完全不在意，认为过去不重要"],
+                category: "past"
+            },
+            {
+                question: "当伴侣需要独处时间时，你会？",
+                options: ["感到被拒绝，情绪低落", "有些失落，但尝试理解", "理解并支持TA的需求", "享受自己的时间，完全支持"],
+                category: "alone_time"
+            },
+            {
+                question: "你如何看待伴侣的异性爱好或活动？",
+                options: ["希望TA避免这些活动", "有些在意，但尊重TA的选择", "理解这是TA的兴趣", "支持TA追求自己喜欢的活动"],
+                category: "hobbies"
+            },
+            {
+                question: "当伴侣与异性朋友旅行时，你会？",
+                options: ["强烈反对，要求TA取消", "感到不安，希望TA改变计划", "有些担心，但选择信任", "完全支持，为TA感到高兴"],
+                category: "travel"
+            },
+            {
+                question: "你如何处理关系中的不确定性？",
+                options: ["需要频繁确认，才能安心", "偶尔询问，寻求安慰", "理解这是正常状态", "享受不确定性，相信关系"],
+                category: "uncertainty"
+            },
+            {
+                question: "你如何看待伴侣与异性的工作合作？",
+                options: ["感到不适，希望减少合作", "有些在意，但理解工作需要", "理解这是职业关系", "支持TA的职业发展"],
+                category: "work_cooperation"
+            },
+            {
+                question: "当伴侣与异性有共同的兴趣时，你会？",
+                options: ["感到威胁，希望TA放弃", "有些吃醋，但努力接受", "理解这是巧合，不特别在意", "支持TA的多元兴趣"],
+                category: "shared_interests"
+            },
+            {
+                question: "你如何定义健康的关系边界？",
+                options: ["希望随时保持联系", "需要频繁确认，但尊重一些空间", "理解需要独立，但保持密切联系", "支持完全的独立和自由"],
+                category: "boundaries"
+            }
+        ];
+
+        const results = [
+            {
+                name: "高度占有欲",
+                category: "High Possessiveness",
+                icon: "💔",
+                description: "根据你的回答，你在恋爱关系中表现出高度的占有欲。这意味着你对伴侣有强烈的控制欲和嫉妒心理，希望完全掌控TA的社交和个人生活。你可能发现自己经常感到不安和焦虑，担心失去伴侣或被他人取代。这种占有欲可能源于不安全感、过去的创伤或对关系的不信任。你的行为可能包括频繁查看伴侣的手机、限制TA的社交活动、对TA的异性朋友产生强烈的嫉妒反应等。虽然你的出发点可能是保护和爱，但这种行为往往会给伴侣带来压力和束缚感，也可能损害关系的健康和长久性。高度占有欲可能会让伴侣感到窒息和不被信任，最终可能导致关系的破裂。建议你深入探索自己占有欲的根源，可能需要专业的心理咨询来帮助你理解和处理这些不安全感。学会信任和放手是建立健康关系的关键，你的伴侣值得被信任和尊重。",
+                traits: ["控制欲强", "嫉妒心重", "不安全感高", "信任度低"]
+            },
+            {
+                name: "中等占有欲",
+                category: "Moderate Possessiveness",
+                icon: "💕",
+                description: "根据你的回答，你在恋爱关系中表现出中等的占有欲。这意味着你对伴侣有一定的控制欲和嫉妒心理，但在某些情况下能够理解和接受TA的独立性。你可能在某些方面表现出占有欲，比如对伴侣的异性朋友有些在意，或者在TA晚归时会感到一些担心。然而，你也开始意识到信任和尊重的重要性，在许多情况下能够给予伴侣一定的自由和空间。你的中等占有欲可能源于一定的不安全感或对关系的过度关注，但你的理性思维让你能够在一些情况下控制这些冲动。这种水平的占有欲在关系中相对常见，但仍然需要被关注和管理。建议你继续发展自己的信任能力，学会区分合理的关心和过度的控制。你可以在保持关心的同时，给予伴侣更多的自由和尊重，这样会让关系更加健康和长久。",
+                traits: ["适度控制", "偶尔嫉妒", "有信任意识", "需要平衡"]
+            },
+            {
+                name: "低度占有欲",
+                category: "Low Possessiveness",
+                icon: "💖",
+                description: "根据你的回答，你在恋爱关系中表现出低度的占有欲。这意味着你对伴侣有较高的信任和尊重，能够接受TA的独立性和社交自由。你理解健康的关系需要双方的独立空间，不会过度干涉或控制伴侣的生活。你的低占有欲源于较强的安全感和对关系的信心，你相信自己的价值，也相信伴侣的忠诚。你可能发现自己很少查看伴侣的隐私，对TA的异性朋友和社交活动持开放和支持的态度。这种态度让伴侣感到被信任和尊重，有助于建立健康、平等的关系。然而，低占有欲并不意味着你不关心伴侣，而是你用更健康的方式表达关心。建议你继续保持这种健康的信任和尊重，同时也要注意在适当的时候表达自己的需求和感受。健康的关系需要双方的相互信任和独立，你的态度为这种关系模式提供了良好的基础。",
+                traits: ["信任度高", "尊重自由", "安全感强", "关系健康"]
+            },
+            {
+                name: "健康平衡",
+                category: "Healthy Balance",
+                icon: "💗",
+                description: "根据你的回答，你在恋爱关系中表现出健康的平衡。这意味着你能够在关心、信任和尊重之间找到完美的平衡点。你既关心伴侣，又尊重TA的独立性和个人空间。你的关系模式是理想的，因为你既不会过度控制，也不会完全忽视。你有较强的安全感和自信，这让你能够信任伴侣，给予TA充分的自由和支持。你的健康平衡可能源于成熟的情感认知和良好的自我价值感。你理解健康的关系需要双方的相互信任、独立性和适度的关心。你可能发现自己能够在大多数情况下做出合理的判断，区分正常的关心和过度的控制。建议你继续保持这种健康的平衡，这是建立长期、幸福关系的关键。你可以成为他人的榜样，展示如何在恋爱关系中保持关心和自由的平衡。",
+                traits: ["完美平衡", "成熟自信", "相互信任", "关系理想"]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = {};
+
+        function startQuiz() {
+            document.getElementById('welcome-page').classList.remove('active');
+            document.getElementById('question-page').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question-number').textContent = `问题 ${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('question-text').textContent = question.question;
+            
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.onclick = () => selectOption(index, optionElement);
+                optionsContainer.appendChild(optionElement);
+            });
+        }
+
+        function selectOption(index, element) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+
+            const question = questions[currentQuestion];
+            answers[question.category] = index;
+
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }, 300);
+        }
+
+        function showResult() {
+            document.getElementById('question-page').classList.remove('active');
+            document.getElementById('result-page').classList.add('active');
+
+            let totalScore = 0;
+            Object.values(answers).forEach(value => {
+                totalScore += value;
+            });
+
+            let result;
+            if (totalScore <= 25) {
+                result = results[3];
+            } else if (totalScore <= 40) {
+                result = results[2];
+            } else if (totalScore <= 55) {
+                result = results[1];
+            } else {
+                result = results[0];
+            }
+
+            document.getElementById('result-icon').textContent = result.icon;
+            document.getElementById('result-name').textContent = result.name;
+            document.getElementById('result-category').textContent = result.category;
+            document.getElementById('result-description').textContent = result.description;
+
+            const traitsContainer = document.getElementById('result-traits');
+            traitsContainer.innerHTML = '';
+            result.traits.forEach(trait => {
+                const traitTag = document.createElement('div');
+                traitTag.className = 'trait-tag';
+                traitTag.textContent = trait;
+                traitsContainer.appendChild(traitTag);
+            });
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            answers = {};
+            document.getElementById('result-page').classList.remove('active');
+            document.getElementById('welcome-page').classList.add('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生命值测试</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, #fff3e0 0%, #ffeb3b 50%, #ffc107 100%);
+            min-height: 100vh;
+            color: #f57f17;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-page {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 600;
+            color: #ff9800;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #ffb74d;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .description {
+            font-size: 1rem;
+            color: #f57f17;
+            margin-bottom: 50px;
+            line-height: 2;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ff6f00 0%, #e65100 100%);
+            color: white;
+            border: none;
+            padding: 18px 60px;
+            font-size: 1.1rem;
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 111, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 111, 0, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .question-page {
+            padding: 40px 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #ffeb3b;
+            border-radius: 2px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6f00, #e65100);
+            transition: width 0.5s ease;
+            border-radius: 2px;
+        }
+
+        .question-number {
+            font-size: 0.9rem;
+            color: #ffb74d;
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            color: #f57f17;
+            margin-bottom: 40px;
+            text-align: center;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #ffeb3b;
+            padding: 18px 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            color: #e65100;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .option:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #ff6f00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 111, 0, 0.2);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, #ff6f00 0%, #e65100 100%);
+            color: white;
+            border-color: #e65100;
+        }
+
+        .result-page {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .result-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #ff9800;
+            margin-bottom: 30px;
+            letter-spacing: 3px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(255, 152, 0, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .result-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: #f57f17;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .result-category {
+            font-size: 0.95rem;
+            color: #ffb74d;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .result-description {
+            font-size: 1rem;
+            color: #f57f17;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .result-traits {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .trait-tag {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffeb3b 100%);
+            color: #e65100;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .result-image {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #fff3e0 0%, #ffeb3b 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #ff6f00;
+            box-shadow: 0 10px 30px rgba(255, 152, 0, 0.2);
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #ff9800 0%, #f57f17 100%);
+            color: white;
+            border: none;
+            padding: 16px 50px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(245, 127, 23, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 127, 23, 0.4);
+        }
+
+        .decorative-element {
+            position: fixed;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .decorative-1 {
+            top: 10%;
+            left: 5%;
+            font-size: 8rem;
+            color: #ff6f00;
+        }
+
+        .decorative-2 {
+            bottom: 10%;
+            right: 5%;
+            font-size: 10rem;
+            color: #e65100;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .logo {
+                font-size: 2.5rem;
+                margin-bottom: 15px;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 30px;
+            }
+
+            .description {
+                font-size: 0.95rem;
+                margin-bottom: 40px;
+            }
+
+            .btn {
+                padding: 15px 45px;
+                font-size: 1rem;
+            }
+
+            .question-text {
+                font-size: 1.2rem;
+                margin-bottom: 30px;
+            }
+
+            .option {
+                padding: 15px 20px;
+                font-size: 0.95rem;
+            }
+
+            .result-title {
+                font-size: 2rem;
+                margin-bottom: 25px;
+            }
+
+            .result-card {
+                padding: 30px 20px;
+            }
+
+            .result-name {
+                font-size: 1.6rem;
+            }
+
+            .result-image {
+                height: 250px;
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+            }
+
+            .description {
+                font-size: 0.9rem;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .option {
+                padding: 12px 18px;
+                font-size: 0.9rem;
+            }
+
+            .result-name {
+                font-size: 1.4rem;
+            }
+
+            .result-image {
+                height: 200px;
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="decorative-element decorative-1">⚡</div>
+    <div class="decorative-element decorative-2">🔥</div>
+
+    <div class="container">
+        <div class="page active" id="welcome-page">
+            <div class="welcome-page">
+                <div class="logo">生命值测试</div>
+                <div class="subtitle">LIFE ENERGY TEST</div>
+                <div class="description">
+                    通过20道生活方式和心理状态的问题，评估你的生命能量水平。
+                    了解你的活力指数、抗压能力和生活态度。
+                    这是一个自我认知的工具，帮助你提升生活质量。
+                </div>
+                <button class="btn" onclick="startQuiz()">开始测试</button>
+            </div>
+        </div>
+
+        <div class="page" id="question-page">
+            <div class="question-page">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="question-number" id="question-number">问题 1 / 20</div>
+                <div class="question-text" id="question-text"></div>
+                <div class="options-container" id="options-container"></div>
+            </div>
+        </div>
+
+        <div class="page" id="result-page">
+            <div class="result-page">
+                <div class="result-title">你的生命能量评估</div>
+                <div class="result-card">
+                    <div class="result-image" id="result-icon">💪</div>
+                    <div class="result-name" id="result-name"></div>
+                    <div class="result-category" id="result-category"></div>
+                    <div class="result-traits" id="result-traits"></div>
+                    <div class="result-description" id="result-description"></div>
+                </div>
+                <button class="restart-btn" onclick="restartQuiz()">重新测试</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "你每天的平均睡眠时间是？",
+                options: ["少于6小时", "6-7小时", "7-8小时", "8小时以上"],
+                category: "sleep"
+            },
+            {
+                question: "你每周运动的频率是？",
+                options: ["从不运动", "1-2次", "3-4次", "5次以上"],
+                category: "exercise"
+            },
+            {
+                question: "你如何评估自己的饮食质量？",
+                options: ["很不规律，经常快餐", "一般，偶尔健康", "比较健康，注意营养", "非常健康，精心搭配"],
+                category: "diet"
+            },
+            {
+                question: "当你感到压力时，你的应对方式是？",
+                options: ["逃避问题，拖延应对", "情绪化反应，容易崩溃", "寻求帮助，依赖他人", "积极面对，主动解决"],
+                category: "stress"
+            },
+            {
+                question: "你对自己的精力水平满意吗？",
+                options: ["非常不满意，经常疲惫", "不太满意，有时精力不足", "基本满意，偶尔需要休息", "非常满意，精力充沛"],
+                category: "energy"
+            },
+            {
+                question: "你每周的社交活动频率是？",
+                options: ["很少社交，宅家为主", "偶尔社交，1-2次", "经常社交，3-4次", "频繁社交，5次以上"],
+                category: "social"
+            },
+            {
+                question: "你是否有固定的兴趣爱好？",
+                options: ["没有，不知道做什么", "有，但很少投入时间", "有，偶尔参与", "有，经常投入并享受"],
+                category: "hobby"
+            },
+            {
+                question: "你如何看待自己的未来？",
+                options: ["悲观，担心很多问题", "不确定，顺其自然", "谨慎乐观，做好准备", "非常乐观，充满希望"],
+                category: "future"
+            },
+            {
+                question: "你每天花在手机/网络上的时间是？",
+                options: ["4小时以上", "3-4小时", "2-3小时", "2小时以下"],
+                category: "digital"
+            },
+            {
+                question: "你如何处理负面情绪？",
+                options: ["压抑情绪，不愿表达", "情绪化反应，容易失控", "寻求倾诉，依赖他人", "自我调节，积极转化"],
+                category: "emotion"
+            },
+            {
+                question: "你对自己的生活节奏满意吗？",
+                options: ["很混乱，经常感到焦虑", "有些混乱，需要调整", "基本有序，偶尔忙碌", "非常满意，节奏良好"],
+                category: "rhythm"
+            },
+            {
+                question: "你是否有明确的生活目标？",
+                options: ["完全没有，迷茫", "有模糊想法，不清晰", "有短期目标，正在努力", "有长期规划，正在实现"],
+                category: "goals"
+            },
+            {
+                question: "你与家人的关系如何？",
+                options: ["紧张，经常冲突", "一般，交流不多", "良好，偶尔联系", "非常亲密，互相支持"],
+                category: "family"
+            },
+            {
+                question: "你如何对待自己的健康？",
+                options: ["忽视，很少关注", "偶尔关注，生病才重视", "比较重视，定期体检", "非常重视，主动维护"],
+                category: "health"
+            },
+            {
+                question: "你是否有学习新技能的习惯？",
+                options: ["从不学习，满足现状", "偶尔学习，兴趣不大", "经常学习，有计划", "持续学习，享受成长"],
+                category: "learning"
+            },
+            {
+                question: "你如何评估自己的抗压能力？",
+                options: ["很弱，容易崩溃", "较弱，需要支持", "一般，可以应对", "很强，能够承受"],
+                category: "resilience"
+            },
+            {
+                question: "你是否有独处的时间？",
+                options: ["没有，害怕独处", "很少，需要陪伴", "有时，享受安静", "经常，需要充电"],
+                category: "alone"
+            },
+            {
+                question: "你对自己的财务状况满意吗？",
+                options: ["很不满意，经常焦虑", "不太满意，压力较大", "基本满意，能够维持", "非常满意，财务自由"],
+                category: "finance"
+            },
+            {
+                question: "你是否有感恩的习惯？",
+                options: ["从不感恩，总觉得不够", "偶尔感恩，遇到好事才想", "经常感恩，记录美好", "每天感恩，充满感激"],
+                category: "gratitude"
+            },
+            {
+                question: "你对自己的整体生活质量满意吗？",
+                options: ["很不满意，想要改变", "不太满意，有些遗憾", "基本满意，可以更好", "非常满意，热爱生活"],
+                category: "quality"
+            }
+        ];
+
+        const results = [
+            {
+                name: "生命能量低",
+                category: "Low Life Energy",
+                icon: "🥀",
+                description: "根据你的回答，你的生命能量处于较低水平。这意味着你可能经常感到疲惫、缺乏动力，对生活缺乏热情。你的生活方式可能存在一些需要改进的地方，比如睡眠不足、运动缺乏、饮食不规律或压力过大等。低生命能量会影响你的工作效率、人际关系和整体幸福感。你可能发现自己难以应对日常挑战，容易感到焦虑或沮丧。然而，认识到自己的状态是改变的第一步。建议你从基础的生活习惯开始调整，比如保证充足的睡眠、增加适度的运动、改善饮食质量、减少数字设备的使用时间等。同时，也要关注自己的心理健康，学会管理压力和情绪。生命能量是可以提升的，通过持续的小改变和积极的努力，你可以逐步恢复活力和热情。记住，这是一个过程，不要急于求成，给自己足够的时间和耐心。你的生命能量值得被重新点燃。",
+                traits: ["精力不足", "需要调整", "压力较大", "缺乏动力"]
+            },
+            {
+                name: "生命能量中等",
+                category: "Moderate Life Energy",
+                icon: "🌱",
+                description: "根据你的回答，你的生命能量处于中等水平。这意味着你有足够的精力应对日常生活，但有时会感到疲惫或缺乏动力。你的生活方式有一些健康的方面，但也存在一些可以改进的空间。你可能在某些方面做得很好，比如有固定的兴趣爱好或良好的社交关系，但在其他方面需要加强，比如运动习惯或压力管理。中等生命能量是一个常见的状态，大多数人都在这个水平。你的生活节奏基本正常，但仍有提升的空间。建议你识别自己生活中的薄弱环节，有针对性地进行改进。比如如果你睡眠不足，就优先改善睡眠；如果你运动不够，就增加一些体育活动。通过有意识的调整，你可以将生命能量提升到更高水平。记住，小的改变可以产生大的影响，持续的努力会带来显著的改善。你的生命能量有巨大的提升潜力。",
+                traits: ["精力一般", "有改进空间", "基本正常", "可以提升"]
+            },
+            {
+                name: "生命能量良好",
+                category: "Good Life Energy",
+                icon: "🌻",
+                description: "根据你的回答，你的生命能量处于良好水平。这意味着你有充沛的精力应对日常挑战，对生活保持积极的态度。你的生活方式相对健康，有良好的睡眠、适度的运动、均衡的饮食和有效的压力管理。你可能发现自己能够平衡工作和生活，在各个方面都表现出色。你的生命能量让你能够追求自己的目标，享受生活的乐趣，并与他人建立积极的关系。良好生命能量是一个令人羡慕的状态，表明你在自我照顾和生活管理方面做得很好。建议你继续保持这些健康的习惯，并寻找进一步提升的机会。比如你可以尝试新的兴趣爱好、学习新的技能或深化现有的关系。生命能量不是静止的，持续的投入和改进可以让你达到更高的水平。你的生命能量为你的人生提供了强大的基础。",
+                traits: ["精力充沛", "生活健康", "积极乐观", "抗压能力强"]
+            },
+            {
+                name: "生命能量高",
+                category: "High Life Energy",
+                icon: "⚡",
+                description: "根据你的回答，你的生命能量处于高水平。这意味着你有非常充沛的精力，对生活充满热情和动力。你的生活方式非常健康，有规律的睡眠、持续的运动、优质的饮食和出色的压力管理。你不仅能够轻松应对日常挑战，还能够追求额外的目标和梦想。你的生命能量让你在各个方面都表现出色，无论是工作、学习还是人际关系。你可能发现自己经常成为他人的能量源泉，能够激励和感染身边的人。高生命能量是一个罕见而宝贵的状态，表明你在自我照顾和生活管理方面达到了卓越的水平。建议你继续保持这些优秀的习惯，并考虑如何将自己的能量用于更大的目标。你的生命能量有无限的潜力，可以为世界做出独特的贡献。记住，保持高能量需要持续的投入和自我关怀，你的努力正在产生巨大的回报。",
+                traits: ["活力四射", "卓越健康", "充满激情", "能量源泉"]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = {};
+
+        function startQuiz() {
+            document.getElementById('welcome-page').classList.remove('active');
+            document.getElementById('question-page').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question-number').textContent = `问题 ${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('question-text').textContent = question.question;
+            
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.onclick = () => selectOption(index, optionElement);
+                optionsContainer.appendChild(optionElement);
+            });
+        }
+
+        function selectOption(index, element) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+
+            const question = questions[currentQuestion];
+            answers[question.category] = index;
+
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }, 300);
+        }
+
+        function showResult() {
+            document.getElementById('question-page').classList.remove('active');
+            document.getElementById('result-page').classList.add('active');
+
+            let totalScore = 0;
+            Object.values(answers).forEach(value => {
+                totalScore += value;
+            });
+
+            let result;
+            if (totalScore <= 30) {
+                result = results[0];
+            } else if (totalScore <= 45) {
+                result = results[1];
+            } else if (totalScore <= 60) {
+                result = results[2];
+            } else {
+                result = results[3];
+            }
+
+            document.getElementById('result-icon').textContent = result.icon;
+            document.getElementById('result-name').textContent = result.name;
+            document.getElementById('result-category').textContent = result.category;
+            document.getElementById('result-description').textContent = result.description;
+
+            const traitsContainer = document.getElementById('result-traits');
+            traitsContainer.innerHTML = '';
+            result.traits.forEach(trait => {
+                const traitTag = document.createElement('div');
+                traitTag.className = 'trait-tag';
+                traitTag.textContent = trait;
+                traitsContainer.appendChild(traitTag);
+            });
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            answers = {};
+            document.getElementById('result-page').classList.remove('active');
+            document.getElementById('welcome-page').classList.add('active');
+        }
+    </script>
+</body>
+</html>

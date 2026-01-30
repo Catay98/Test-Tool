@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智商测试</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%);
+            min-height: 100vh;
+            color: #1565c0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-page {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 600;
+            color: #0d47a1;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #1976d2;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .description {
+            font-size: 1rem;
+            color: #1565c0;
+            margin-bottom: 50px;
+            line-height: 2;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+            color: white;
+            border: none;
+            padding: 18px 60px;
+            font-size: 1.1rem;
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .question-page {
+            padding: 40px 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #bbdefb;
+            border-radius: 2px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #42a5f5, #1976d2);
+            transition: width 0.5s ease;
+            border-radius: 2px;
+        }
+
+        .question-number {
+            font-size: 0.9rem;
+            color: #1976d2;
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            color: #1565c0;
+            margin-bottom: 40px;
+            text-align: center;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #bbdefb;
+            padding: 18px 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            color: #0d47a1;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .option:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #42a5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(66, 165, 245, 0.2);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+            color: white;
+            border-color: #1976d2;
+        }
+
+        .result-page {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .result-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #0d47a1;
+            margin-bottom: 30px;
+            letter-spacing: 3px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(13, 71, 161, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .result-score {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: #1565c0;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .result-category {
+            font-size: 0.95rem;
+            color: #1976d2;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .result-description {
+            font-size: 1rem;
+            color: #1565c0;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .result-traits {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .trait-tag {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #0d47a1;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .result-image {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #42a5f5;
+            box-shadow: 0 10px 30px rgba(13, 71, 161, 0.2);
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
+            color: white;
+            border: none;
+            padding: 16px 50px;
+            font-size: 1rem;
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(13, 71, 161, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(13, 71, 161, 0.4);
+        }
+
+        .decorative-element {
+            position: fixed;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .decorative-1 {
+            top: 10%;
+            left: 5%;
+            font-size: 8rem;
+            color: #42a5f5;
+        }
+
+        .decorative-2 {
+            bottom: 10%;
+            right: 5%;
+            font-size: 10rem;
+            color: #1976d2;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .logo {
+                font-size: 2.5rem;
+                margin-bottom: 15px;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 30px;
+            }
+
+            .description {
+                font-size: 0.95rem;
+                margin-bottom: 40px;
+            }
+
+            .btn {
+                padding: 15px 45px;
+                font-size: 1rem;
+            }
+
+            .question-text {
+                font-size: 1.2rem;
+                margin-bottom: 30px;
+            }
+
+            .option {
+                padding: 15px 20px;
+                font-size: 0.95rem;
+            }
+
+            .result-title {
+                font-size: 2rem;
+                margin-bottom: 25px;
+            }
+
+            .result-card {
+                padding: 30px 20px;
+            }
+
+            .result-score {
+                font-size: 2.5rem;
+            }
+
+            .result-image {
+                height: 250px;
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+            }
+
+            .description {
+                font-size: 0.9rem;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .option {
+                padding: 12px 18px;
+                font-size: 0.9rem;
+            }
+
+            .result-score {
+                font-size: 2rem;
+            }
+
+            .result-image {
+                height: 200px;
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="decorative-element decorative-1">🧠</div>
+    <div class="decorative-element decorative-2">💡</div>
+
+    <div class="container">
+        <div class="page active" id="welcome-page">
+            <div class="welcome-page">
+                <div class="logo">智商测试</div>
+                <div class="subtitle">INTELLIGENCE QUOTIENT TEST</div>
+                <div class="description">
+                    通过20道逻辑推理和数学问题，测试你的思维能力。
+                    请在安静的环境下完成测试，不要查阅资料。
+                    结果仅供参考，不代表你的全部能力。
+                </div>
+                <button class="btn" onclick="startQuiz()">开始测试</button>
+            </div>
+        </div>
+
+        <div class="page" id="question-page">
+            <div class="question-page">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="question-number" id="question-number">问题 1 / 20</div>
+                <div class="question-text" id="question-text"></div>
+                <div class="options-container" id="options-container"></div>
+            </div>
+        </div>
+
+        <div class="page" id="result-page">
+            <div class="result-page">
+                <div class="result-title">你的智商评估</div>
+                <div class="result-card">
+                    <div class="result-image" id="result-icon">🎯</div>
+                    <div class="result-score" id="result-score"></div>
+                    <div class="result-category" id="result-category"></div>
+                    <div class="result-traits" id="result-traits"></div>
+                    <div class="result-description" id="result-description"></div>
+                </div>
+                <button class="restart-btn" onclick="restartQuiz()">重新测试</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "如果 A = 1, B = 2, C = 3，那么 CAT = ？",
+                options: ["24", "30", "36", "42"],
+                correct: 1
+            },
+            {
+                question: "找出规律：2, 6, 12, 20, 30, ？",
+                options: ["40", "42", "44", "46"],
+                correct: 1
+            },
+            {
+                question: "如果昨天是星期三，那么后天是星期几？",
+                options: ["星期五", "星期六", "星期日", "星期一"],
+                correct: 0
+            },
+            {
+                question: "一个盒子里有3个红球和5个蓝球，随机取出一个球，不放回，再取一个球，两个球都是红球的概率是？",
+                options: ["1/14", "3/28", "3/32", "1/8"],
+                correct: 0
+            },
+            {
+                question: "找出不同的一个：",
+                options: ["苹果", "香蕉", "橘子", "胡萝卜"],
+                correct: 3
+            },
+            {
+                question: "如果 3x + 7 = 22，那么 x = ？",
+                options: ["3", "4", "5", "6"],
+                correct: 2
+            },
+            {
+                question: "一个正方形的周长是20厘米，它的面积是多少？",
+                options: ["16平方厘米", "20平方厘米", "25平方厘米", "100平方厘米"],
+                correct: 2
+            },
+            {
+                question: "找出规律：1, 1, 2, 3, 5, 8, ？",
+                options: ["11", "12", "13", "14"],
+                correct: 2
+            },
+            {
+                question: "如果所有的玫瑰都是花，有些花是红色的，那么以下哪个结论一定正确？",
+                options: ["所有的玫瑰都是红色的", "有些玫瑰是红色的", "红色的花都是玫瑰", "玫瑰是红色的"],
+                correct: 1
+            },
+            {
+                question: "一个钟表显示3:15，时针和分针之间的最小角度是多少？",
+                options: ["0度", "7.5度", "15度", "30度"],
+                correct: 0
+            },
+            {
+                question: "如果 A > B, B > C, C > D，那么以下哪个一定正确？",
+                options: ["A > D", "A > C", "B > D", "以上都正确"],
+                correct: 3
+            },
+            {
+                question: "找出规律：3, 6, 9, 12, 15, ？",
+                options: ["16", "17", "18", "19"],
+                correct: 2
+            },
+            {
+                question: "一个水池有进水管和出水管，进水管4小时可以注满，出水管6小时可以排空，如果两个管同时打开，多久可以注满？",
+                options: ["10小时", "12小时", "24小时", "无法注满"],
+                correct: 1
+            },
+            {
+                question: "如果今天是5月1日星期二，那么6月1日是星期几？",
+                options: ["星期四", "星期五", "星期六", "星期日"],
+                correct: 1
+            },
+            {
+                question: "找出规律：2, 4, 8, 16, 32, ？",
+                options: ["48", "64", "96", "128"],
+                correct: 1
+            },
+            {
+                question: "一个三角形的三边分别是3cm, 4cm, 5cm，这是什么三角形？",
+                options: ["等边三角形", "等腰三角形", "直角三角形", "锐角三角形"],
+                correct: 2
+            },
+            {
+                question: "如果所有的猫都是动物，有些动物是宠物，那么以下哪个结论可能正确？",
+                options: ["所有的猫都是宠物", "有些猫是宠物", "所有的宠物都是猫", "宠物都是猫"],
+                correct: 1
+            },
+            {
+                question: "一个数字除以3余2，除以5余3，除以7余4，这个数字最小是多少？",
+                options: ["53", "58", "63", "68"],
+                correct: 0
+            },
+            {
+                question: "找出规律：1, 4, 9, 16, 25, ？",
+                options: ["30", "36", "42", "49"],
+                correct: 1
+            },
+            {
+                question: "如果 A + B = C, B + C = D, C + D = A, 那么 A + B + C + D = ？",
+                options: ["0", "A", "B", "无法确定"],
+                correct: 0
+            },
+            {
+                question: "一个立方体的表面积是54平方厘米，它的边长是多少？",
+                options: ["2厘米", "3厘米", "4厘米", "5厘米"],
+                correct: 1
+            }
+        ];
+
+        const results = [
+            {
+                minScore: 0,
+                maxScore: 7,
+                iq: "90以下",
+                category: "需提升",
+                icon: "📚",
+                description: "根据你的答题情况，你的智商评估在90以下。这个分数并不代表你的全部能力，智商只是衡量认知能力的一个维度，而且这个测试可能无法完全反映你的真实智力水平。每个人都有自己独特的优势和才能，智商测试主要侧重于逻辑推理、数学计算和空间想象等特定领域。你可能在这些领域需要更多的练习和提升，但这并不影响你在其他方面的出色表现。建议你多做一些逻辑推理题、数学练习和智力游戏，这些活动可以帮助你提升相关思维能力。同时，也要认识到自己的其他优势，比如创造力、情商、实践能力等，这些同样是重要的智力表现形式。记住，智力是可以发展的，通过持续的学习和练习，你完全可以提升自己的认知能力。不要让一个测试分数定义你，你的人生价值远超一个数字。",
+                traits: ["逻辑思维", "数学计算", "空间想象", "问题解决"]
+            },
+            {
+                minScore: 8,
+                maxScore: 12,
+                iq: "90-110",
+                category: "平均水平",
+                icon: "🎯",
+                description: "根据你的答题情况，你的智商评估在90-110之间，属于平均水平。这是一个很正常的范围，大多数人的智商都在这个区间内。这个分数表明你在逻辑推理、数学计算和空间想象等方面表现正常，能够应对日常生活中的各种认知挑战。你可能在某些领域表现突出，而在其他领域相对一般，这是完全正常的现象。智商是一个谱系，每个人都有自己的强项和弱项。你的平均水平说明你具备基本的认知能力，可以胜任大多数工作和学习任务。建议你继续发挥自己的优势，同时有意识地提升相对薄弱的领域。通过持续的学习和练习，你可以进一步提升自己的认知能力。记住，智商只是一个参考指标，你的成功更多地取决于努力、坚持和情商等其他因素。保持学习的态度，你完全可以在自己的领域取得出色的成就。",
+                traits: ["平衡发展", "正常认知", "持续学习", "稳步提升"]
+            },
+            {
+                minScore: 13,
+                maxScore: 16,
+                iq: "110-130",
+                category: "优秀水平",
+                icon: "⭐",
+                description: "根据你的答题情况，你的智商评估在110-130之间，属于优秀水平。这是一个令人印象深刻的分数，表明你在逻辑推理、数学计算和空间想象等方面表现出色。你的认知能力高于平均水平，能够快速理解和处理复杂信息。你可能在学术、科技、工程等领域有天然的优势，能够胜任需要高度认知能力的任务。你的优秀智商让你在学习新知识和解决难题时更加高效，这为你的人生和职业发展提供了强大的基础。然而，智商高并不等于成功，情商、创造力、实践能力同样重要。建议你充分利用自己的认知优势，在适合的领域深入发展，同时也要注意培养其他重要的能力。记住，智力是一种天赋，但如何使用这种天赋更加重要。保持谦逊和学习的态度，你的潜力是无限的。",
+                traits: ["逻辑强", "思维敏捷", "学习高效", "问题解决"]
+            },
+            {
+                minScore: 17,
+                maxScore: 20,
+                iq: "130以上",
+                category: "卓越水平",
+                icon: "🏆",
+                description: "根据你的答题情况，你的智商评估在130以上，属于卓越水平。这是一个非常罕见的分数，表明你在逻辑推理、数学计算和空间想象等方面表现出卓越的能力。你的认知能力远超平均水平，能够轻松处理极其复杂的信息和问题。你可能是那种在学术、科研、创新等领域有天然优势的人，能够看到他人看不到的模式和联系。你的卓越智商让你在几乎所有认知任务中都表现出色，这为你的人生提供了无限的可能性。然而，高智商也带来一些挑战，比如可能感到与同龄人不同步，或者在情感和社交方面需要额外的努力。建议你充分利用自己的认知优势，在适合的领域追求卓越，同时也要注意平衡发展其他重要的能力，如情商、创造力和领导力。记住，智力是一种强大的工具，但如何使用这种工具更加重要。保持谦逊和学习的态度，你的潜力是无限的，你可以为世界做出独特的贡献。",
+                traits: ["卓越逻辑", "天才思维", "创新能力强", "问题解决"]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function startQuiz() {
+            document.getElementById('welcome-page').classList.remove('active');
+            document.getElementById('question-page').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question-number').textContent = `问题 ${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('question-text').textContent = question.question;
+            
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.onclick = () => selectOption(index, optionElement);
+                optionsContainer.appendChild(optionElement);
+            });
+        }
+
+        function selectOption(index, element) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+
+            if (index === questions[currentQuestion].correct) {
+                score++;
+            }
+
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }, 300);
+        }
+
+        function showResult() {
+            document.getElementById('question-page').classList.remove('active');
+            document.getElementById('result-page').classList.add('active');
+
+            let result = results[0];
+            results.forEach(r => {
+                if (score >= r.minScore && score <= r.maxScore) {
+                    result = r;
+                }
+            });
+
+            document.getElementById('result-icon').textContent = result.icon;
+            document.getElementById('result-score').textContent = `得分: ${score} / ${questions.length}`;
+            document.getElementById('result-category').textContent = `IQ评估: ${result.iq}`;
+            document.getElementById('result-description').textContent = result.description;
+
+            const traitsContainer = document.getElementById('result-traits');
+            traitsContainer.innerHTML = '';
+            result.traits.forEach(trait => {
+                const traitTag = document.createElement('div');
+                traitTag.className = 'trait-tag';
+                traitTag.textContent = trait;
+                traitsContainer.appendChild(traitTag);
+            });
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('result-page').classList.remove('active');
+            document.getElementById('welcome-page').classList.add('active');
+        }
+    </script>
+</body>
+</html>
