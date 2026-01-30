@@ -22,10 +22,70 @@
             overflow-x: hidden;
         }
 
+        .navigation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(139, 111, 92, 0.1);
+            z-index: 1000;
+            padding: 15px 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #8b6f5c;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-link {
+            color: #6b5a52;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(135deg, #d4a5a5 0%, #c48f8f 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(196, 143, 143, 0.3);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #d4a5a5 0%, #c48f8f 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(196, 143, 143, 0.3);
+        }
+
         .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 100px 20px 20px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -299,8 +359,26 @@
         }
 
         @media (max-width: 768px) {
+            .navigation {
+                padding: 10px 0;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+
+            .nav-link {
+                font-size: 0.85rem;
+                padding: 6px 12px;
+            }
+
             .container {
-                padding: 15px;
+                padding: 140px 15px 20px;
             }
 
             .logo {
@@ -388,6 +466,23 @@
 <body>
     <div class="decorative-element decorative-1">✿</div>
     <div class="decorative-element decorative-2">❀</div>
+
+    <nav class="navigation">
+        <div class="nav-container">
+            <div class="nav-logo">测试中心</div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">本命香</a>
+                <a href="anhei.html" class="nav-link">暗黑测试</a>
+                <a href="lianai.html" class="nav-link">恋爱测试</a>
+                <a href="shengmingzhi.html" class="nav-link">墓志铭</a>
+                <a href="shounue.html" class="nav-link">受虐测试</a>
+                <a href="xing.html" class="nav-link">性测试</a>
+                <a href="xinli.html" class="nav-link">心理测试</a>
+                <a href="zhanyouyu.html" class="nav-link">占有欲</a>
+                <a href="zhishang.html" class="nav-link">智商测试</a>
+            </div>
+        </div>
+    </nav>
 
     <div class="container">
         <div class="page active" id="welcome-page">
